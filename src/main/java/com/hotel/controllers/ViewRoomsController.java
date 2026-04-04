@@ -10,6 +10,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.paint.Color;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -41,12 +42,12 @@ public class ViewRoomsController {
 					super.updateItem(item, empty);
 					if (empty) {
 						setText(null);
-						setStyle("");
+						setTextFill(Color.TRANSPARENT);
 						return;
 					}
 
 					setText(item ? "Available" : "Booked");
-					setStyle(item ? "-fx-text-fill: green;" : "-fx-text-fill: red;");
+					setTextFill(item ? Color.web("#44d17a") : Color.web("#ff6565"));
 				}
 			});
 
