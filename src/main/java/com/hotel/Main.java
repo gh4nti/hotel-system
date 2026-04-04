@@ -1,5 +1,6 @@
 package com.hotel;
 
+import com.hotel.ui.ThemeManager;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -11,8 +12,7 @@ public class Main extends Application {
     public void start(Stage stage) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/LoginView.fxml"));
         Scene scene = new Scene(loader.load(), 400, 300);
-        scene.getStylesheets().add(
-                getClass().getResource("/style.css").toExternalForm());
+        ThemeManager.applyTheme(scene);
 
         stage.setTitle("Hotel System");
         stage.setScene(scene);

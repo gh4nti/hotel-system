@@ -2,6 +2,7 @@ package com.hotel.controllers;
 
 import com.hotel.dao.UserDAO;
 import com.hotel.models.User;
+import com.hotel.ui.ThemeManager;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -50,8 +51,7 @@ public class LoginController {
 						LoginController.class.getResource(view));
 
 				Scene scene = new Scene(loader.load());
-				scene.getStylesheets().add(
-						LoginController.class.getResource("/style.css").toExternalForm());
+				ThemeManager.applyTheme(scene);
 
 				Stage stage = (Stage) usernameField.getScene().getWindow();
 				stage.setScene(scene);

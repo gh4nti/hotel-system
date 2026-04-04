@@ -1,5 +1,6 @@
 package com.hotel.controllers;
 
+import com.hotel.ui.ThemeManager;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -25,8 +26,7 @@ public class AdminController {
 					getClass().getResource("/views/ViewRooms.fxml"));
 
 			Scene scene = new Scene(loader.load());
-			scene.getStylesheets().add(
-					getClass().getResource("/style.css").toExternalForm());
+			ThemeManager.applyTheme(scene);
 
 			// Get stage from button click event (clean way)
 			Stage stage = (Stage) ((javafx.scene.Node) event.getSource())
