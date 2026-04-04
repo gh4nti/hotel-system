@@ -121,4 +121,23 @@ public class AdminController {
 			e.printStackTrace();
 		}
 	}
+
+	@FXML
+	public void handleLogout(javafx.event.ActionEvent event) {
+		try {
+			LoginController.currentUser = null;
+
+			FXMLLoader loader = new FXMLLoader(
+					getClass().getResource("/views/LoginView.fxml"));
+
+			Stage stage = (Stage) ((javafx.scene.Node) event.getSource())
+					.getScene()
+					.getWindow();
+
+			Scene scene = ThemeManager.createThemedScene(loader.load(), stage.getScene());
+			stage.setScene(scene);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

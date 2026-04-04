@@ -13,6 +13,8 @@
 
     <Button text="Add Room" onAction="#handleAddRoom" styleClass="secondary-button" />
     <Button text="View Rooms" onAction="#handleViewRooms" styleClass="primary-button"/>
+    <Region VBox.vgrow="ALWAYS" />
+    <Button text="Log Out" onAction="#handleLogout" styleClass="secondary-button" />
   </VBox>
 
 </StackPane>
