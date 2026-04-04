@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="10" alignment="CENTER"
+      xmlns:fx="http://javafx.com/fxml">
+
+    <Label text="Guest Dashboard" style="-fx-font-size: 20px;" />
+
+    <Button text="View Rooms" />
+    <Button text="Book Room" />
+
+</VBox>
