@@ -1,13 +1,14 @@
 /* Global foundation */
 .root {
-	-fx-font-family: "Poppins", "Trebuchet MS", "Gill Sans", sans-serif;
+	-fx-font-family: "Helvetica Neue", "Segoe UI", Arial, sans-serif;
+	-fx-font-weight: 600;
 	-fx-background-color: linear-gradient(
 		to bottom right,
 		-app-bg-start,
 		-app-bg-mid 45%,
 		-app-bg-end 100%
 	);
-	-fx-font-size: 14px;
+	-fx-font-size: 15px;
 }
 
 /* Reusable screen wrappers */
@@ -28,26 +29,30 @@
 /* Typography */
 .screen-title {
 	-fx-text-fill: -title-color;
-	-fx-font-size: 30px;
+	-fx-font-size: 32px;
 	-fx-font-weight: 800;
+	-fx-padding: 2 4 4 4;
 }
 
 .section-title {
 	-fx-text-fill: -title-color;
-	-fx-font-size: 24px;
-	-fx-font-weight: 700;
+	-fx-font-size: 26px;
+	-fx-font-weight: 800;
+	-fx-padding: 2 4 4 4;
 }
 
 .subtitle {
 	-fx-text-fill: -subtitle-color;
-	-fx-font-size: 15px;
-	-fx-font-weight: 600;
+	-fx-font-size: 16px;
+	-fx-font-weight: 700;
+	-fx-padding: 2 4 6 4;
 }
 
 .info-label {
 	-fx-text-fill: -info-color;
-	-fx-font-size: 13px;
-	-fx-font-weight: 600;
+	-fx-font-size: 14px;
+	-fx-font-weight: 700;
+	-fx-padding: 2 4 4 4;
 }
 
 /* Inputs */
@@ -58,7 +63,9 @@
 	-fx-border-radius: 10;
 	-fx-border-color: -input-border;
 	-fx-border-width: 0.8;
-	-fx-padding: 10 12;
+	-fx-font-size: 15px;
+	-fx-font-weight: 600;
+	-fx-padding: 12 14;
 	-fx-prompt-text-fill: -input-prompt;
 	-fx-text-fill: -input-text;
 }
@@ -74,8 +81,9 @@
 .button {
 	-fx-background-radius: 12;
 	-fx-cursor: hand;
-	-fx-padding: 10 18;
-	-fx-font-weight: 700;
+	-fx-font-size: 15px;
+	-fx-padding: 11 20;
+	-fx-font-weight: 900;
 }
 
 .primary-button {

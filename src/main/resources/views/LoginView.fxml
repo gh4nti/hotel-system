@@ -7,10 +7,10 @@
        fx:controller="com.hotel.controllers.LoginController"
        styleClass="page-root">
 
-  <VBox spacing="15" alignment="CENTER" maxWidth="320" styleClass="card">
+    <VBox spacing="15" alignment="CENTER" maxWidth="360" styleClass="card">
 
     <Label text="Hotel Login" styleClass="screen-title"/>
-    <Label text="Welcome back. Sign in to continue." styleClass="subtitle"/>
+        <Label text="Welcome back. Sign in to continue." wrapText="true" styleClass="subtitle"/>
 
         <TextField fx:id="usernameField" promptText="Username"/>
         <PasswordField fx:id="passwordField" promptText="Password"/>
