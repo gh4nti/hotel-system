@@ -50,10 +50,8 @@ public class LoginController {
 				FXMLLoader loader = new FXMLLoader(
 						LoginController.class.getResource(view));
 
-				Scene scene = new Scene(loader.load());
-				ThemeManager.applyTheme(scene);
-
 				Stage stage = (Stage) usernameField.getScene().getWindow();
+				Scene scene = ThemeManager.createThemedScene(loader.load(), stage.getScene());
 				stage.setScene(scene);
 
 			} else {

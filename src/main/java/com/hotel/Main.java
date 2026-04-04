@@ -11,8 +11,7 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/LoginView.fxml"));
-        Scene scene = new Scene(loader.load(), 400, 300);
-        ThemeManager.applyTheme(scene);
+        Scene scene = ThemeManager.createThemedScene(loader.load(), null);
 
         stage.setTitle("Hotel System");
         stage.setScene(scene);

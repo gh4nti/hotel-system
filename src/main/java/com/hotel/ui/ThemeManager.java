@@ -4,14 +4,16 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
-import javafx.scene.Scene;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 
 public final class ThemeManager {
 
 	private static final String BASE_CSS = "/style.css";
 	private static final String LIGHT_CSS = "/theme-light.css";
 	private static final String DARK_CSS = "/theme-dark.css";
+	private static final double DEFAULT_SCENE_WIDTH = 900;
+	private static final double DEFAULT_SCENE_HEIGHT = 700;
 	private static final boolean SYSTEM_DARK_MODE = detectSystemDarkMode();
 
 	private ThemeManager() {
@@ -34,6 +36,24 @@ public final class ThemeManager {
 			root.getStyleClass().removeAll("theme-light", "theme-dark");
 			root.getStyleClass().add(darkMode ? "theme-dark" : "theme-light");
 		}
+	}
+
+	public static Scene createThemedScene(Parent root, Scene currentScene) {
+		double width = DEFAULT_SCENE_WIDTH;
+		double height = DEFAULT_SCENE_HEIGHT;
+
+		if (currentScene != null) {
+			if (currentScene.getWidth() > 0) {
+				width = currentScene.getWidth();
+			}
+			if (currentScene.getHeight() > 0) {
+				height = currentScene.getHeight();
+			}
+		}
+
+		Scene scene = new Scene(root, width, height);
+		applyTheme(scene);
+		return scene;
 	}
 
 	private static boolean detectSystemDarkMode() {

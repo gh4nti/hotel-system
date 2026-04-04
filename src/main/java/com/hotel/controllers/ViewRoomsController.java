@@ -35,8 +35,11 @@ public class ViewRoomsController {
 				@Override
 				protected void updateItem(Boolean item, boolean empty) {
 					super.updateItem(item, empty);
-					if (empty)
+					if (empty) {
+						setText(null);
+						setStyle("");
 						return;
+					}
 
 					setText(item ? "Available" : "Booked");
 					setStyle(item ? "-fx-text-fill: green;" : "-fx-text-fill: red;");

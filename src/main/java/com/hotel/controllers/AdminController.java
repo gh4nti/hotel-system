@@ -25,13 +25,12 @@ public class AdminController {
 			FXMLLoader loader = new FXMLLoader(
 					getClass().getResource("/views/ViewRooms.fxml"));
 
-			Scene scene = new Scene(loader.load());
-			ThemeManager.applyTheme(scene);
-
 			// Get stage from button click event (clean way)
 			Stage stage = (Stage) ((javafx.scene.Node) event.getSource())
 					.getScene()
 					.getWindow();
+
+			Scene scene = ThemeManager.createThemedScene(loader.load(), stage.getScene());
 
 			stage.setScene(scene);
 

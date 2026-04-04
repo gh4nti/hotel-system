@@ -20,7 +20,7 @@
 	-fx-background-radius: 20;
 	-fx-border-radius: 20;
 	-fx-border-color: -card-border;
-	-fx-border-width: 1;
+	-fx-border-width: 0.5;
 	-fx-padding: 24;
 	-fx-effect: dropshadow(gaussian, -card-shadow, 22, 0.14, 0, 8);
 }
@@ -57,7 +57,7 @@
 	-fx-background-radius: 10;
 	-fx-border-radius: 10;
 	-fx-border-color: -input-border;
-	-fx-border-width: 1;
+	-fx-border-width: 0.8;
 	-fx-padding: 10 12;
 	-fx-prompt-text-fill: -input-prompt;
 	-fx-text-fill: -input-text;
@@ -67,7 +67,7 @@
 .password-field:focused {
 	-fx-border-color: -input-focus;
 	-fx-background-color: -input-focus-bg;
-	-fx-effect: dropshadow(gaussian, -input-focus-shadow, 10, 0.18, 0, 0);
+	-fx-effect: dropshadow(gaussian, -input-focus-shadow, 4, 0.06, 0, 0);
 }
 
 /* Buttons */
@@ -99,7 +99,7 @@
 	-fx-background-color: -secondary-bg;
 	-fx-border-color: -secondary-border;
 	-fx-border-radius: 12;
-	-fx-border-width: 1;
+	-fx-border-width: 0.8;
 	-fx-text-fill: -secondary-text;
 }
 
@@ -113,6 +113,7 @@
 	-fx-background-radius: 14;
 	-fx-border-radius: 14;
 	-fx-border-color: -table-border;
+	-fx-border-width: 0.7;
 	-fx-padding: 6;
 }
 
@@ -140,6 +141,11 @@
 .table-row-cell {
 	-fx-background-color: transparent;
 	-fx-cell-size: 35;
+	-fx-text-background-color: -table-text;
+}
+
+.table-view .cell {
+	-fx-text-fill: -table-text;
 }
 
 .table-row-cell:odd {
