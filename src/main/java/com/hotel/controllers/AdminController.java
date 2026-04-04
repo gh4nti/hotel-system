@@ -3,9 +3,20 @@ package com.hotel.controllers;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
 public class AdminController {
+
+	@FXML
+	private Label welcomeLabel;
+
+	@FXML
+	public void initialize() {
+		if (LoginController.currentUser != null) {
+			welcomeLabel.setText("Welcome, " + LoginController.currentUser.getUsername());
+		}
+	}
 
 	@FXML
 	public void handleViewRooms(javafx.event.ActionEvent event) {

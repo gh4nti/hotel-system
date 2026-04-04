@@ -8,6 +8,8 @@
       fx:controller="com.hotel.controllers.AdminController">
 
     <Label text="Admin Dashboard" style="-fx-font-size: 20px;" />
+    
+    <Label fx:id="welcomeLabel" style="-fx-font-size: 16px;" />
 
     <Button text="Add Room" />
     <Button text="View Rooms" onAction="#handleViewRooms"/>
