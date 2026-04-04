@@ -50,6 +50,8 @@ public class LoginController {
 						LoginController.class.getResource(view));
 
 				Scene scene = new Scene(loader.load());
+				scene.getStylesheets().add(
+						LoginController.class.getResource("/style.css").toExternalForm());
 
 				Stage stage = (Stage) usernameField.getScene().getWindow();
 				stage.setScene(scene);

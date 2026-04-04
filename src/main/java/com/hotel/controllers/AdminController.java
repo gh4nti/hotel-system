@@ -25,6 +25,8 @@ public class AdminController {
 					getClass().getResource("/views/ViewRooms.fxml"));
 
 			Scene scene = new Scene(loader.load());
+			scene.getStylesheets().add(
+					getClass().getResource("/style.css").toExternalForm());
 
 			// Get stage from button click event (clean way)
 			Stage stage = (Stage) ((javafx.scene.Node) event.getSource())

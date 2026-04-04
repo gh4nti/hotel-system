@@ -3,22 +3,24 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox spacing="15" alignment="CENTER"
-      xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.hotel.controllers.ViewRoomsController"
-      style="-fx-padding: 20;">
+<StackPane xmlns:fx="http://javafx.com/fxml"
+           fx:controller="com.hotel.controllers.ViewRoomsController"
+           styleClass="page-root">
 
-    <Label text="All Rooms" style="-fx-font-size: 22px;" />
+    <VBox spacing="15" alignment="CENTER" maxWidth="650" styleClass="card">
+        <Label text="All Rooms" styleClass="section-title" />
+        <Label text="Select an available room to continue." styleClass="subtitle" />
 
-    <TableView fx:id="table" prefWidth="500" prefHeight="300">
-        <columns>
-            <TableColumn fx:id="idCol" text="ID" prefWidth="50"/>
-            <TableColumn fx:id="typeCol" text="Type" prefWidth="120"/>
-            <TableColumn fx:id="priceCol" text="Price" prefWidth="120"/>
-            <TableColumn fx:id="availCol" text="Available" prefWidth="120"/>
-        </columns>
-    </TableView>
+        <TableView fx:id="table" prefWidth="560" prefHeight="320">
+            <columns>
+                <TableColumn fx:id="idCol" text="ID" prefWidth="60"/>
+                <TableColumn fx:id="typeCol" text="Type" prefWidth="170"/>
+                <TableColumn fx:id="priceCol" text="Price" prefWidth="150"/>
+                <TableColumn fx:id="availCol" text="Available" prefWidth="170"/>
+            </columns>
+        </TableView>
 
-    <Button text="Book Selected Room" onAction="#handleBook"/>
+        <Button text="Book Selected Room" onAction="#handleBook" styleClass="primary-button"/>
+    </VBox>
 
-</VBox>
+</StackPane>

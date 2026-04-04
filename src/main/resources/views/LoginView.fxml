@@ -4,19 +4,20 @@
 <?import javafx.scene.layout.*?>
 
 <StackPane xmlns:fx="http://javafx.com/fxml"
-           fx:controller="com.hotel.controllers.LoginController">
+       fx:controller="com.hotel.controllers.LoginController"
+       styleClass="page-root">
 
-    <VBox spacing="15" alignment="CENTER" maxWidth="280"
-          style="-fx-background-color: white; -fx-padding: 25; -fx-background-radius: 15;">
+  <VBox spacing="15" alignment="CENTER" maxWidth="320" styleClass="card">
 
-        <Label text="Hotel Login" styleClass="label-title"/>
+    <Label text="Hotel Login" styleClass="screen-title"/>
+    <Label text="Welcome back. Sign in to continue." styleClass="subtitle"/>
 
         <TextField fx:id="usernameField" promptText="Username"/>
         <PasswordField fx:id="passwordField" promptText="Password"/>
 
-        <Button text="Login" onAction="#handleLogin"/>
+    <Button text="Login" onAction="#handleLogin" styleClass="primary-button"/>
 
-        <Label fx:id="messageLabel"/>
+    <Label fx:id="messageLabel" styleClass="info-label"/>
 
     </VBox>
 

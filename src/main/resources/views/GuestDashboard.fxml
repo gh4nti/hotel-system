@@ -3,13 +3,15 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox spacing="10" alignment="CENTER"
-      xmlns:fx="http://javafx.com/fxml"
-      style="-fx-padding: 20;">
+<StackPane xmlns:fx="http://javafx.com/fxml"
+       styleClass="page-root">
 
-    <Label text="Guest Dashboard" style="-fx-font-size: 20px;" />
+  <VBox spacing="12" alignment="CENTER" maxWidth="380" styleClass="card">
+    <Label text="Guest Dashboard" styleClass="section-title" />
+    <Label text="Browse and reserve available rooms." styleClass="subtitle" />
 
-    <Button text="View Rooms" />
-    <Button text="Book Room" />
+    <Button text="View Rooms" styleClass="primary-button" />
+    <Button text="Book Room" styleClass="secondary-button" />
+  </VBox>
 
-</VBox>
+</StackPane>
