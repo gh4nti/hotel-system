@@ -11,7 +11,7 @@
     <Label text="Admin Dashboard" styleClass="section-title"/>
     <Label fx:id="welcomeLabel" styleClass="subtitle" />
 
-    <Button text="Add Room" styleClass="secondary-button" />
+    <Button text="Add Room" onAction="#handleAddRoom" styleClass="secondary-button" />
     <Button text="View Rooms" onAction="#handleViewRooms" styleClass="primary-button"/>
   </VBox>
 

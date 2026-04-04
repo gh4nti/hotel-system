@@ -163,3 +163,27 @@
 .table-row-cell:selected {
 	-fx-background-color: -table-row-selected;
 }
+
+/* Dialog styling */
+.dialog-pane.themed-dialog {
+	-fx-background-color: -card-bg;
+	-fx-border-color: -card-border;
+	-fx-border-width: 0.8;
+	-fx-border-radius: 12;
+	-fx-background-radius: 12;
+}
+
+.dialog-pane.themed-dialog .header-panel {
+	-fx-background-color: -card-bg;
+	-fx-padding: 18 20 12 20;
+}
+
+.dialog-pane.themed-dialog .header-panel .label {
+	-fx-text-fill: -subtitle-color;
+	-fx-font-size: 16px;
+	-fx-font-weight: 700;
+}
+
+.dialog-pane.themed-dialog .content.label {
+	-fx-text-fill: -subtitle-color;
+}
