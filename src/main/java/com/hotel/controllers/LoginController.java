@@ -10,6 +10,8 @@ import javafx.stage.Stage;
 
 public class LoginController {
 
+	public static User currentUser;
+
 	@FXML
 	private TextField usernameField;
 
@@ -30,6 +32,8 @@ public class LoginController {
 			User user = userDAO.login(username, password);
 
 			if (user != null) {
+				currentUser = user;
+
 				messageLabel.setText("Login successful!");
 
 				String view;

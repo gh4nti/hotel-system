@@ -8,7 +8,6 @@ import javafx.collections.*;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.Alert;
 
 public class ViewRoomsController {
 
@@ -58,8 +57,8 @@ public class ViewRoomsController {
 		try {
 			BookingDAO dao = new BookingDAO();
 
-			// TEMP: userId = 1 (we'll improve later)
-			dao.bookRoom(new Booking(0, 1, selected.getId(), "2026-04-05"));
+			int userId = LoginController.currentUser.getId();
+			dao.bookRoom(new Booking(0, userId, selected.getId(), "2026-04-05"));
 
 			showAlert("Room booked successfully!");
 
