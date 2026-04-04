@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="10" alignment="CENTER"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.hotel.controllers.ViewRoomsController">
+
+    <Label text="All Rooms" style="-fx-font-size: 20px;" />
+
+    <TableView fx:id="table">
+        <columns>
+            <TableColumn fx:id="idCol" text="ID" />
+            <TableColumn fx:id="typeCol" text="Type" />
+            <TableColumn fx:id="priceCol" text="Price" />
+            <TableColumn fx:id="availCol" text="Available" />
+        </columns>
+    </TableView>
+
+</VBox>

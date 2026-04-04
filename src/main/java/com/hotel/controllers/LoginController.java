@@ -32,15 +32,19 @@ public class LoginController {
 			if (user != null) {
 				messageLabel.setText("Login successful!");
 
-				String view = "";
+				String view;
 
-				if (user.getRole().equals("admin")) {
+				if (user.getRole().equalsIgnoreCase("admin")) {
 					view = "/views/AdminDashboard.fxml";
 				} else {
 					view = "/views/GuestDashboard.fxml";
 				}
 
-				FXMLLoader loader = new FXMLLoader(getClass().getResource(view));
+				System.out.println("Loading: " + view);
+
+				FXMLLoader loader = new FXMLLoader(
+						LoginController.class.getResource(view));
+
 				Scene scene = new Scene(loader.load());
 
 				Stage stage = (Stage) usernameField.getScene().getWindow();
