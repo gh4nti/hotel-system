@@ -31,6 +31,17 @@ public class ViewRoomsController {
 			typeCol.setCellValueFactory(new PropertyValueFactory<>("type"));
 			priceCol.setCellValueFactory(new PropertyValueFactory<>("price"));
 			availCol.setCellValueFactory(new PropertyValueFactory<>("available"));
+			availCol.setCellFactory(col -> new TableCell<>() {
+				@Override
+				protected void updateItem(Boolean item, boolean empty) {
+					super.updateItem(item, empty);
+					if (empty)
+						return;
+
+					setText(item ? "Available" : "Booked");
+					setStyle(item ? "-fx-text-fill: green;" : "-fx-text-fill: red;");
+				}
+			});
 
 			ObservableList<Room> list = FXCollections.observableArrayList(dao.getAllRooms());
 			table.setItems(list);

@@ -3,18 +3,19 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox spacing="10" alignment="CENTER"
+<VBox spacing="15" alignment="CENTER"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.hotel.controllers.ViewRoomsController">
+      fx:controller="com.hotel.controllers.ViewRoomsController"
+      style="-fx-padding: 20;">
 
-    <Label text="All Rooms" style="-fx-font-size: 20px;" />
+    <Label text="All Rooms" style="-fx-font-size: 22px;" />
 
-    <TableView fx:id="table">
+    <TableView fx:id="table" prefWidth="500" prefHeight="300">
         <columns>
-            <TableColumn fx:id="idCol" text="ID" />
-            <TableColumn fx:id="typeCol" text="Type" />
-            <TableColumn fx:id="priceCol" text="Price" />
-            <TableColumn fx:id="availCol" text="Available" />
+            <TableColumn fx:id="idCol" text="ID" prefWidth="50"/>
+            <TableColumn fx:id="typeCol" text="Type" prefWidth="120"/>
+            <TableColumn fx:id="priceCol" text="Price" prefWidth="120"/>
+            <TableColumn fx:id="availCol" text="Available" prefWidth="120"/>
         </columns>
     </TableView>
 

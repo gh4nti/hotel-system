@@ -5,9 +5,10 @@
 
 <VBox spacing="10" alignment="CENTER"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.hotel.controllers.AdminController">
+      fx:controller="com.hotel.controllers.AdminController"
+      style="-fx-padding: 20;">
 
-    <Label text="Admin Dashboard" style="-fx-font-size: 20px;" />
+    <Label text="Admin Dashboard" styleClass="label-title"/>
     
     <Label fx:id="welcomeLabel" style="-fx-font-size: 16px;" />
 

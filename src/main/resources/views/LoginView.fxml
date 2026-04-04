@@ -3,17 +3,21 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox spacing="10" alignment="CENTER"
-      xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.hotel.controllers.LoginController">
+<StackPane xmlns:fx="http://javafx.com/fxml"
+           fx:controller="com.hotel.controllers.LoginController">
 
-    <Label text="Login" style="-fx-font-size: 20px;" />
+    <VBox spacing="15" alignment="CENTER" maxWidth="280"
+          style="-fx-background-color: white; -fx-padding: 25; -fx-background-radius: 15;">
 
-    <TextField fx:id="usernameField" promptText="Username" />
-    <PasswordField fx:id="passwordField" promptText="Password" />
+        <Label text="Hotel Login" styleClass="label-title"/>
 
-    <Button text="Login" onAction="#handleLogin" />
+        <TextField fx:id="usernameField" promptText="Username"/>
+        <PasswordField fx:id="passwordField" promptText="Password"/>
 
-    <Label fx:id="messageLabel" />
+        <Button text="Login" onAction="#handleLogin"/>
 
-</VBox>
+        <Label fx:id="messageLabel"/>
+
+    </VBox>
+
+</StackPane>
