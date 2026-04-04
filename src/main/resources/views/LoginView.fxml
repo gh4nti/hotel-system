@@ -13,7 +13,7 @@
         <Label text="Welcome back. Sign in to continue." wrapText="true" styleClass="subtitle"/>
 
         <TextField fx:id="usernameField" promptText="Username"/>
-        <PasswordField fx:id="passwordField" promptText="Password"/>
+        <PasswordField fx:id="passwordField" promptText="Password" onAction="#handleLogin"/>
 
     <Button text="Login" onAction="#handleLogin" styleClass="primary-button"/>
 

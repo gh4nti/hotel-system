@@ -4,10 +4,14 @@ import com.hotel.dao.BookingDAO;
 import com.hotel.dao.RoomDAO;
 import com.hotel.models.Booking;
 import com.hotel.models.Room;
+import com.hotel.ui.ThemeManager;
 import javafx.collections.*;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 public class ViewRoomsController {
 
@@ -79,6 +83,29 @@ public class ViewRoomsController {
 			// refresh table
 			table.setItems(FXCollections.observableArrayList(new RoomDAO().getAllRooms()));
 
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@FXML
+	public void handleBack(javafx.event.ActionEvent event) {
+		try {
+			String view;
+
+			if (LoginController.currentUser != null
+					&& LoginController.currentUser.getRole().equalsIgnoreCase("admin")) {
+				view = "/views/AdminDashboard.fxml";
+			} else {
+				view = "/views/GuestDashboard.fxml";
+			}
+
+			FXMLLoader loader = new FXMLLoader(getClass().getResource(view));
+			Stage stage = (Stage) ((javafx.scene.Node) event.getSource())
+					.getScene()
+					.getWindow();
+			Scene scene = ThemeManager.createThemedScene(loader.load(), stage.getScene());
+			stage.setScene(scene);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

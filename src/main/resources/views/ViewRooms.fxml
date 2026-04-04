@@ -11,6 +11,8 @@
         <Label text="All Rooms" styleClass="section-title" />
         <Label text="Select an available room to continue." styleClass="subtitle" />
 
+        <Button text="Back to Dashboard" onAction="#handleBack" styleClass="secondary-button" />
+
         <TableView fx:id="table" prefWidth="560" prefHeight="320">
             <columns>
                 <TableColumn fx:id="idCol" text="ID" prefWidth="60"/>
