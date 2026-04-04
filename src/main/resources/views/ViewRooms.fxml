@@ -18,4 +18,6 @@
         </columns>
     </TableView>
 
+    <Button text="Book Selected Room" onAction="#handleBook"/>
+
 </VBox>
