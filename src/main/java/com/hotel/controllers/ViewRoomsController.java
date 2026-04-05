@@ -2,14 +2,15 @@ package com.hotel.controllers;
 
 import com.hotel.dao.BookingDAO;
 import com.hotel.dao.RoomDAO;
+import com.hotel.models.BookedRoomInfo;
 import com.hotel.models.Room;
 import com.hotel.ui.ThemeManager;
 import javafx.collections.*;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.paint.Color;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -24,19 +25,19 @@ public class ViewRoomsController {
 	private Label subtitleLabel;
 
 	@FXML
-	private TableView<Room> table;
+	private TableView<BookedRoomInfo> table;
 	@FXML
-	private TableColumn<Room, String> roomNumberCol;
+	private TableColumn<BookedRoomInfo, String> roomNumberCol;
 	@FXML
-	private TableColumn<Room, Integer> floorCol;
+	private TableColumn<BookedRoomInfo, String> typeCol;
 	@FXML
-	private TableColumn<Room, String> typeCol;
+	private TableColumn<BookedRoomInfo, Double> priceCol;
 	@FXML
-	private TableColumn<Room, Double> priceCol;
-	@FXML
-	private TableColumn<Room, Boolean> availCol;
+	private TableColumn<BookedRoomInfo, String> usernameCol;
 	@FXML
 	private ComboBox<String> typeCombo;
+	@FXML
+	private HBox bookingControls;
 	@FXML
 	private Label summaryLabel;
 
@@ -50,34 +51,23 @@ public class ViewRoomsController {
 					&& LoginController.currentUser.getRole().equalsIgnoreCase("admin");
 
 			roomNumberCol.setCellValueFactory(new PropertyValueFactory<>("roomNumber"));
-			floorCol.setCellValueFactory(new PropertyValueFactory<>("floor"));
 			typeCol.setCellValueFactory(new PropertyValueFactory<>("type"));
 			priceCol.setCellValueFactory(new PropertyValueFactory<>("price"));
-			availCol.setCellValueFactory(new PropertyValueFactory<>("available"));
+			usernameCol.setCellValueFactory(new PropertyValueFactory<>("username"));
 			roomTypes = dao.getRoomTypes();
 			typeCombo.getItems().setAll(roomTypes);
 			typeCombo.setPromptText("Select room type");
-			availCol.setCellFactory(col -> new TableCell<>() {
-				@Override
-				protected void updateItem(Boolean item, boolean empty) {
-					super.updateItem(item, empty);
-					if (empty) {
-						setText(null);
-						setTextFill(Color.TRANSPARENT);
-						return;
-					}
 
-					setText(item ? "Available" : "Booked");
-					setTextFill(item ? Color.web("#44d17a") : Color.web("#ff6565"));
-				}
-			});
-
-			ObservableList<Room> list = FXCollections.observableArrayList(dao.getAllRooms());
-			table.setItems(list);
-
-			if (!isAdmin) {
+			if (isAdmin) {
+				titleLabel.setText("Booked Rooms");
+				subtitleLabel.setText("Currently booked rooms with guest usernames.");
+				bookingControls.setVisible(false);
+				bookingControls.setManaged(false);
+				table.setItems(FXCollections.observableArrayList(dao.getBookedRoomsWithUsername()));
+			} else {
 				titleLabel.setText("Book a Room");
 				subtitleLabel.setText("Select a room type and the system will assign an available room automatically.");
+				usernameCol.setVisible(false);
 				table.setVisible(false);
 				table.setManaged(false);
 			}
@@ -93,6 +83,11 @@ public class ViewRoomsController {
 	public void handleBook() {
 		if (LoginController.currentUser == null) {
 			showAlert("Please login to book a room");
+			return;
+		}
+
+		if (LoginController.currentUser.getRole().equalsIgnoreCase("admin")) {
+			showAlert("Booking is available only from the guest dashboard.");
 			return;
 		}
 
@@ -115,9 +110,6 @@ public class ViewRoomsController {
 			}
 
 			showAlert("Room booked successfully: " + bookedRoom.getRoomNumber());
-
-			// refresh table
-			table.setItems(FXCollections.observableArrayList(new RoomDAO().getAllRooms()));
 			refreshSummary();
 
 		} catch (Exception e) {
@@ -126,6 +118,14 @@ public class ViewRoomsController {
 	}
 
 	private void refreshSummary() throws Exception {
+		boolean isAdmin = LoginController.currentUser != null
+				&& LoginController.currentUser.getRole().equalsIgnoreCase("admin");
+
+		if (isAdmin) {
+			summaryLabel.setText("Total booked rooms: " + dao.getBookedRoomsWithUsername().size());
+			return;
+		}
+
 		Map<String, Integer> counts = dao.getAvailableCountsByType();
 		StringBuilder builder = new StringBuilder("Available rooms: ");
 		for (int i = 0; i < roomTypes.size(); i++) {

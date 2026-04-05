@@ -1,6 +1,7 @@
 package com.hotel.dao;
 
 import com.hotel.database.DatabaseConnection;
+import com.hotel.models.BookedRoomInfo;
 import com.hotel.models.Room;
 
 import java.sql.*;
@@ -124,5 +125,34 @@ public class RoomDAO {
 		stmt.setInt(1, roomId);
 		stmt.executeUpdate();
 		conn.close();
+	}
+
+	public List<BookedRoomInfo> getBookedRoomsWithUsername() throws SQLException {
+		Connection conn = DatabaseConnection.connect();
+
+		String sql = """
+				SELECT r.room_number,
+				       r.type,
+				       r.price,
+				       u.username
+				FROM Booking b
+				JOIN Room r ON r.id = b.room_id
+				JOIN User u ON u.id = b.user_id
+				ORDER BY CAST(r.room_number AS INTEGER)
+				""";
+		Statement stmt = conn.createStatement();
+		ResultSet rs = stmt.executeQuery(sql);
+
+		List<BookedRoomInfo> bookedRooms = new ArrayList<>();
+		while (rs.next()) {
+			bookedRooms.add(new BookedRoomInfo(
+					rs.getString("room_number"),
+					rs.getString("type"),
+					rs.getDouble("price"),
+					rs.getString("username")));
+		}
+
+		conn.close();
+		return bookedRooms;
 	}
 }
