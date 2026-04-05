@@ -71,6 +71,68 @@
 	-fx-text-fill: -input-text;
 }
 
+.combo-box-base {
+	-fx-background-color: -input-bg;
+	-fx-background-radius: 10;
+	-fx-border-radius: 10;
+	-fx-border-color: -input-border;
+	-fx-border-width: 0.8;
+	-fx-font-family: "Helvetica Neue", "Segoe UI", Arial, sans-serif;
+	-fx-font-size: 15px;
+	-fx-font-weight: 700;
+	-fx-padding: 0;
+}
+
+.combo-box-base:focused {
+	-fx-border-color: -input-focus;
+	-fx-background-color: -input-focus-bg;
+	-fx-effect: dropshadow(gaussian, -input-focus-shadow, 4, 0.06, 0, 0);
+}
+
+.combo-box .arrow-button {
+	-fx-background-color: transparent;
+	-fx-background-radius: 0 10 10 0;
+	-fx-padding: 0 12 0 10;
+}
+
+.combo-box .arrow {
+	-fx-background-color: -subtitle-color;
+}
+
+.combo-box .list-cell {
+	-fx-background-color: transparent;
+	-fx-text-fill: -input-text;
+	-fx-padding: 12 14;
+	-fx-font-family: "Helvetica Neue", "Segoe UI", Arial, sans-serif;
+	-fx-font-size: 15px;
+	-fx-font-weight: 700;
+}
+
+.combo-box-popup .list-view {
+	-fx-background-color: -card-bg;
+	-fx-background-insets: 0;
+	-fx-background-radius: 12;
+	-fx-border-color: -card-border;
+	-fx-border-radius: 12;
+	-fx-border-width: 0.8;
+	-fx-padding: 6;
+}
+
+.combo-box-popup .list-cell {
+	-fx-background-color: transparent;
+	-fx-text-fill: -subtitle-color;
+	-fx-padding: 10 14;
+}
+
+.combo-box-popup .list-cell:hover {
+	-fx-background-color: -secondary-hover;
+}
+
+.combo-box-popup .list-cell:selected {
+	-fx-background-color: -table-row-selected;
+	-fx-text-fill: -input-text;
+}
+
 .text-field:focused,
 .password-field:focused {
 	-fx-border-color: -input-focus;

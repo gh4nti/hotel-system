@@ -11,7 +11,20 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 public class AdminController {
+
+	private static final Map<String, Double> ROOM_PRICES = new LinkedHashMap<>();
+
+	static {
+		ROOM_PRICES.put("Single", 1000.0);
+		ROOM_PRICES.put("Double", 2000.0);
+		ROOM_PRICES.put("Deluxe", 3000.0);
+		ROOM_PRICES.put("Suite", 4500.0);
+		ROOM_PRICES.put("Presidential Suite", 8000.0);
+	}
 
 	@FXML
 	private Label welcomeLabel;
@@ -39,11 +52,19 @@ public class AdminController {
 		Label priceLabel = new Label("Price:");
 		priceLabel.getStyleClass().add("info-label");
 
-		TextField typeField = new TextField();
-		typeField.setPromptText("e.g., Single, Double, Suite");
+		ComboBox<String> typeField = new ComboBox<>();
+		typeField.getItems().addAll(ROOM_PRICES.keySet());
+		typeField.setPromptText("Select a room type");
 
 		TextField priceField = new TextField();
-		priceField.setPromptText("e.g., 99.99");
+		priceField.setEditable(false);
+		priceField.setFocusTraversable(false);
+		priceField.setPromptText("Select a room type");
+
+		typeField.valueProperty().addListener((observable, oldValue, newValue) -> {
+			Double price = ROOM_PRICES.get(newValue);
+			priceField.setText(price == null ? "" : String.valueOf(price.intValue()));
+		});
 
 		grid.add(typeLabel, 0, 0);
 		grid.add(typeField, 1, 0);
@@ -70,13 +91,20 @@ public class AdminController {
 		dialog.setResultConverter(dialogButton -> {
 			if (dialogButton == ButtonType.OK) {
 				try {
-					String type = typeField.getText().trim();
-					double price = Double.parseDouble(priceField.getText().trim());
+					String type = typeField.getValue();
+					String priceText = priceField.getText().trim();
 
-					if (type.isEmpty()) {
-						showAlert("Error", "Please enter a room type");
+					if (type == null || type.isEmpty()) {
+						showAlert("Error", "Please select a room type");
 						return null;
 					}
+
+					if (priceText.isEmpty()) {
+						showAlert("Error", "Please select a room type");
+						return null;
+					}
+
+					double price = Double.parseDouble(priceText);
 
 					Room room = new Room(0, type, price, true);
 					new RoomDAO().addRoom(room);
