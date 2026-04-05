@@ -134,7 +134,16 @@ public class RoomDAO {
 		String sql = """
 				SELECT r.room_number,
 				       r.type,
-				       r.price,
+				       COALESCE(b.check_in_date, b.date) AS check_in_date,
+				       COALESCE(b.check_out_date, date(COALESCE(b.check_in_date, b.date), '+1 day')) AS check_out_date,
+				       r.price AS price_per_night,
+				       CASE
+				         WHEN b.check_in_date IS NOT NULL
+				              AND b.check_out_date IS NOT NULL
+				              AND julianday(b.check_out_date) > julianday(b.check_in_date)
+				         THEN (julianday(b.check_out_date) - julianday(b.check_in_date)) * r.price
+				         ELSE r.price
+				       END AS total_price,
 				       u.username
 				FROM Booking b
 				JOIN Room r ON r.id = b.room_id
@@ -149,7 +158,10 @@ public class RoomDAO {
 			bookedRooms.add(new BookedRoomInfo(
 					rs.getString("room_number"),
 					rs.getString("type"),
-					rs.getDouble("price"),
+					rs.getString("check_in_date"),
+					rs.getString("check_out_date"),
+					rs.getDouble("price_per_night"),
+					rs.getDouble("total_price"),
 					rs.getString("username")));
 		}
 

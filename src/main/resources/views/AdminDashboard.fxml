@@ -12,6 +12,7 @@
     <Label fx:id="welcomeLabel" styleClass="subtitle" />
 
     <Label text="Room inventory is pre-generated and automatically managed." styleClass="info-label" wrapText="true" />
+
     <Button text="Modify Room" onAction="#handleModifyRoom" styleClass="secondary-button" />
     <Button text="View Rooms" onAction="#handleViewRooms" styleClass="primary-button"/>
     <Region VBox.vgrow="ALWAYS" />

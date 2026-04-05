@@ -30,6 +30,8 @@ public class GuestController {
 	private Button bookRoomButton;
 	@FXML
 	private Button upgradeRoomButton;
+	@FXML
+	private Button checkoutRoomButton;
 
 	private final BookingDAO bookingDAO = new BookingDAO();
 	private final RoomDAO roomDAO = new RoomDAO();
@@ -52,17 +54,23 @@ public class GuestController {
 					bookRoomButton.setText("Book Another Room");
 					upgradeRoomButton.setVisible(true);
 					upgradeRoomButton.setManaged(true);
+					checkoutRoomButton.setVisible(true);
+					checkoutRoomButton.setManaged(true);
 				} else {
 					bookingStatusLabel.setText("You have not booked a room yet.");
 					bookRoomButton.setText("Book Room");
 					upgradeRoomButton.setVisible(false);
 					upgradeRoomButton.setManaged(false);
+					checkoutRoomButton.setVisible(false);
+					checkoutRoomButton.setManaged(false);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
 				bookingStatusLabel.setText("Could not load your bookings right now.");
 				upgradeRoomButton.setVisible(false);
 				upgradeRoomButton.setManaged(false);
+				checkoutRoomButton.setVisible(false);
+				checkoutRoomButton.setManaged(false);
 			}
 		} else {
 			welcomeLabel.setText("Welcome, guest");
@@ -70,6 +78,8 @@ public class GuestController {
 			bookRoomButton.setText("Book Room");
 			upgradeRoomButton.setVisible(false);
 			upgradeRoomButton.setManaged(false);
+			checkoutRoomButton.setVisible(false);
+			checkoutRoomButton.setManaged(false);
 		}
 	}
 
@@ -167,6 +177,60 @@ public class GuestController {
 		} catch (Exception e) {
 			e.printStackTrace();
 			showAlert("Room upgrade failed. Please try again.");
+		}
+	}
+
+	@FXML
+	public void handleCheckoutRoom() {
+		if (LoginController.currentUser == null) {
+			showAlert("Please login to check out a room.");
+			return;
+		}
+
+		try {
+			List<UserBookingInfo> bookings = bookingDAO.getBookingsForUser(LoginController.currentUser.getId());
+			if (bookings.isEmpty()) {
+				showAlert("You do not have any booked rooms to check out.");
+				refreshDashboard();
+				return;
+			}
+
+			UserBookingInfo selectedBooking;
+			if (bookings.size() == 1) {
+				selectedBooking = bookings.get(0);
+			} else {
+				ChoiceDialog<UserBookingInfo> bookingDialog = new ChoiceDialog<>(bookings.get(0), bookings);
+				bookingDialog.setTitle("Select Room");
+				bookingDialog.setHeaderText("Choose a room to check out");
+				bookingDialog.setContentText("Your rooms:");
+
+				Optional<UserBookingInfo> selectedBookingOpt = bookingDialog.showAndWait();
+				if (selectedBookingOpt.isEmpty()) {
+					return;
+				}
+				selectedBooking = selectedBookingOpt.get();
+			}
+
+			Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
+			confirmAlert.setTitle("Confirm Checkout");
+			confirmAlert.setHeaderText("Check out room " + selectedBooking.getRoomNumber() + "?");
+			confirmAlert.setContentText("This will free up the room and remove it from your bookings.");
+
+			Optional<ButtonType> confirm = confirmAlert.showAndWait();
+			if (confirm.isEmpty() || confirm.get() != ButtonType.OK) {
+				return;
+			}
+
+			bookingDAO.checkoutBookingRoom(
+					LoginController.currentUser.getId(),
+					selectedBooking.getBookingId(),
+					selectedBooking.getRoomId());
+
+			showAlert("Checked out successfully from room " + selectedBooking.getRoomNumber() + ".");
+			refreshDashboard();
+		} catch (Exception e) {
+			e.printStackTrace();
+			showAlert("Checkout failed. Please try again.");
 		}
 	}
 

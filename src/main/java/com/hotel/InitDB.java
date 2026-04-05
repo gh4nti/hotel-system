@@ -33,9 +33,38 @@ public class InitDB {
 			stmt.execute(
 					"CREATE TABLE IF NOT EXISTS Room (id INTEGER PRIMARY KEY AUTOINCREMENT, room_number TEXT UNIQUE, floor INTEGER, type TEXT, price REAL, available INTEGER)");
 			stmt.execute(
-					"CREATE TABLE IF NOT EXISTS Booking (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER, room_id INTEGER, date TEXT)");
+					"CREATE TABLE IF NOT EXISTS Booking (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER, room_id INTEGER, date TEXT, check_in_date TEXT, check_out_date TEXT)");
+
+			ensureBookingSchema(conn);
 
 			seedRoomsIfNeeded(conn);
+		}
+	}
+
+	private static void ensureBookingSchema(Connection conn) throws Exception {
+		boolean hasCheckIn = false;
+		boolean hasCheckOut = false;
+
+		try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery("PRAGMA table_info(Booking)")) {
+			while (rs.next()) {
+				String columnName = rs.getString("name");
+				if ("check_in_date".equalsIgnoreCase(columnName)) {
+					hasCheckIn = true;
+				}
+				if ("check_out_date".equalsIgnoreCase(columnName)) {
+					hasCheckOut = true;
+				}
+			}
+		}
+
+		try (Statement stmt = conn.createStatement()) {
+			if (!hasCheckIn) {
+				stmt.execute("ALTER TABLE Booking ADD COLUMN check_in_date TEXT");
+			}
+			if (!hasCheckOut) {
+				stmt.execute("ALTER TABLE Booking ADD COLUMN check_out_date TEXT");
+			}
+			stmt.execute("UPDATE Booking SET check_in_date = date WHERE check_in_date IS NULL AND date IS NOT NULL");
 		}
 	}
 

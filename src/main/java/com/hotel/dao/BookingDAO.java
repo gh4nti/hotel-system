@@ -33,7 +33,8 @@ public class BookingDAO {
 		conn.close();
 	}
 
-	public Room bookRandomRoomByType(int userId, String roomType, String date) throws SQLException {
+	public Room bookRandomRoomByType(int userId, String roomType, String checkInDate, String checkOutDate)
+			throws SQLException {
 		Connection conn = DatabaseConnection.connect();
 		conn.setAutoCommit(false);
 
@@ -56,11 +57,13 @@ public class BookingDAO {
 					rs.getDouble("price"),
 					true);
 
-			String insertSql = "INSERT INTO Booking(user_id, room_id, date) VALUES(?,?,?)";
+			String insertSql = "INSERT INTO Booking(user_id, room_id, date, check_in_date, check_out_date) VALUES(?,?,?,?,?)";
 			PreparedStatement insertStmt = conn.prepareStatement(insertSql);
 			insertStmt.setInt(1, userId);
 			insertStmt.setInt(2, room.getId());
-			insertStmt.setString(3, date);
+			insertStmt.setString(3, checkInDate);
+			insertStmt.setString(4, checkInDate);
+			insertStmt.setString(5, checkOutDate);
 			insertStmt.executeUpdate();
 
 			String updateSql = "UPDATE Room SET available = 0 WHERE id = ?";
@@ -167,6 +170,47 @@ public class BookingDAO {
 			PreparedStatement freeStmt = conn.prepareStatement(freeOldSql);
 			freeStmt.setInt(1, oldRoomId);
 			freeStmt.executeUpdate();
+
+			conn.commit();
+		} catch (SQLException e) {
+			conn.rollback();
+			throw e;
+		} finally {
+			conn.close();
+		}
+	}
+
+	public void checkoutBookingRoom(int userId, int bookingId, int roomId) throws SQLException {
+		Connection conn = DatabaseConnection.connect();
+		conn.setAutoCommit(false);
+
+		try {
+			String validateSql = "SELECT room_id FROM Booking WHERE id = ? AND user_id = ?";
+			PreparedStatement validateStmt = conn.prepareStatement(validateSql);
+			validateStmt.setInt(1, bookingId);
+			validateStmt.setInt(2, userId);
+			ResultSet rs = validateStmt.executeQuery();
+
+			if (!rs.next() || rs.getInt("room_id") != roomId) {
+				conn.rollback();
+				throw new SQLException("Invalid booking selected for checkout.");
+			}
+
+			String deleteSql = "DELETE FROM Booking WHERE id = ? AND user_id = ?";
+			PreparedStatement deleteStmt = conn.prepareStatement(deleteSql);
+			deleteStmt.setInt(1, bookingId);
+			deleteStmt.setInt(2, userId);
+			int deletedRows = deleteStmt.executeUpdate();
+
+			if (deletedRows == 0) {
+				conn.rollback();
+				throw new SQLException("Booking could not be checked out.");
+			}
+
+			String freeRoomSql = "UPDATE Room SET available = 1 WHERE id = ?";
+			PreparedStatement freeRoomStmt = conn.prepareStatement(freeRoomSql);
+			freeRoomStmt.setInt(1, roomId);
+			freeRoomStmt.executeUpdate();
 
 			conn.commit();
 		} catch (SQLException e) {

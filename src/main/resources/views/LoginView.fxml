@@ -18,7 +18,7 @@
 
     <HBox spacing="10" alignment="CENTER">
         <Button fx:id="primaryButton" text="Continue" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" onAction="#handlePrimaryAction" styleClass="primary-button"/>
-        <Button fx:id="secondaryButton" text="Change Username" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" visible="false" managed="false" onAction="#handleSecondaryAction" styleClass="secondary-button"/>
+        <Button fx:id="secondaryButton" text="Go Back" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" visible="false" managed="false" onAction="#handleSecondaryAction" styleClass="secondary-button"/>
     </HBox>
 
     <Label fx:id="messageLabel" styleClass="info-label"/>

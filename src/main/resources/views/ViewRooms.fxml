@@ -7,24 +7,43 @@
            fx:controller="com.hotel.controllers.ViewRoomsController"
            styleClass="page-root">
 
-    <VBox spacing="15" alignment="CENTER" maxWidth="650" styleClass="card">
+    <VBox spacing="15" alignment="CENTER" maxWidth="980" styleClass="card">
         <Label fx:id="titleLabel" text="All Rooms" styleClass="section-title" />
         <Label fx:id="subtitleLabel" text="Select a room type and the system will assign an available room automatically." styleClass="subtitle" />
         <Label fx:id="summaryLabel" styleClass="info-label" wrapText="true" />
 
-        <HBox fx:id="bookingControls" spacing="10" alignment="CENTER">
-            <Label text="Book by type:" styleClass="info-label" />
-            <ComboBox fx:id="typeCombo" prefWidth="220" />
+        <VBox fx:id="bookingControls" spacing="12" alignment="CENTER" fillWidth="false">
+            <HBox spacing="10" alignment="CENTER">
+                <Label text="Book by type:" styleClass="info-label" />
+                <ComboBox fx:id="typeCombo" prefWidth="220" />
+            </HBox>
+
+            <HBox spacing="10" alignment="CENTER">
+                <Label text="Check-in:" styleClass="info-label" />
+                <DatePicker fx:id="checkInDatePicker" prefWidth="160" />
+                <Label text="Check-out:" styleClass="info-label" />
+                <DatePicker fx:id="checkOutDatePicker" prefWidth="160" />
+            </HBox>
+
+            <HBox spacing="20" alignment="CENTER">
+                <Label fx:id="nightsLabel" text="Nights: --" styleClass="info-label" />
+                <Label fx:id="pricePerNightLabel" text="Price/night: --" styleClass="info-label" />
+                <Label fx:id="totalPriceLabel" text="Total: --" styleClass="info-label" />
+            </HBox>
+
             <Button text="Book Room" onAction="#handleBook" styleClass="primary-button" />
-        </HBox>
+        </VBox>
 
         <Button text="Back to Dashboard" onAction="#handleBack" styleClass="secondary-button" />
 
-        <TableView fx:id="table" prefWidth="560" prefHeight="320">
+        <TableView fx:id="table" prefWidth="920" prefHeight="320">
             <columns>
-                <TableColumn fx:id="roomNumberCol" text="Room No" prefWidth="110"/>
-                <TableColumn fx:id="typeCol" text="Type" prefWidth="170"/>
-                <TableColumn fx:id="priceCol" text="Price" prefWidth="110"/>
+                <TableColumn fx:id="roomNumberCol" text="Room No" prefWidth="90"/>
+                <TableColumn fx:id="typeCol" text="Type" prefWidth="130"/>
+                <TableColumn fx:id="checkInCol" text="Check-in" prefWidth="130"/>
+                <TableColumn fx:id="checkOutCol" text="Check-out" prefWidth="130"/>
+                <TableColumn fx:id="pricePerNightCol" text="Price/Night" prefWidth="130"/>
+                <TableColumn fx:id="totalPriceCol" text="Total Price" prefWidth="130"/>
                 <TableColumn fx:id="usernameCol" text="Username" prefWidth="170"/>
             </columns>
         </TableView>

@@ -10,11 +10,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 
@@ -31,15 +32,31 @@ public class ViewRoomsController {
 	@FXML
 	private TableColumn<BookedRoomInfo, String> typeCol;
 	@FXML
-	private TableColumn<BookedRoomInfo, Double> priceCol;
+	private TableColumn<BookedRoomInfo, String> checkInCol;
+	@FXML
+	private TableColumn<BookedRoomInfo, String> checkOutCol;
+	@FXML
+	private TableColumn<BookedRoomInfo, Double> pricePerNightCol;
+	@FXML
+	private TableColumn<BookedRoomInfo, Double> totalPriceCol;
 	@FXML
 	private TableColumn<BookedRoomInfo, String> usernameCol;
 	@FXML
 	private ComboBox<String> typeCombo;
 	@FXML
-	private HBox bookingControls;
+	private VBox bookingControls;
 	@FXML
 	private Label summaryLabel;
+	@FXML
+	private DatePicker checkInDatePicker;
+	@FXML
+	private DatePicker checkOutDatePicker;
+	@FXML
+	private Label nightsLabel;
+	@FXML
+	private Label pricePerNightLabel;
+	@FXML
+	private Label totalPriceLabel;
 
 	private RoomDAO dao = new RoomDAO();
 	private List<String> roomTypes;
@@ -52,11 +69,46 @@ public class ViewRoomsController {
 
 			roomNumberCol.setCellValueFactory(new PropertyValueFactory<>("roomNumber"));
 			typeCol.setCellValueFactory(new PropertyValueFactory<>("type"));
-			priceCol.setCellValueFactory(new PropertyValueFactory<>("price"));
+			checkInCol.setCellValueFactory(new PropertyValueFactory<>("checkInDate"));
+			checkOutCol.setCellValueFactory(new PropertyValueFactory<>("checkOutDate"));
+			pricePerNightCol.setCellValueFactory(new PropertyValueFactory<>("pricePerNight"));
+			totalPriceCol.setCellValueFactory(new PropertyValueFactory<>("totalPrice"));
 			usernameCol.setCellValueFactory(new PropertyValueFactory<>("username"));
 			roomTypes = dao.getRoomTypes();
 			typeCombo.getItems().setAll(roomTypes);
 			typeCombo.setPromptText("Select room type");
+			typeCombo.valueProperty().addListener((obs, oldVal, newVal) -> refreshBookingQuote());
+
+			checkInDatePicker.setValue(LocalDate.now());
+			checkInDatePicker.setDayCellFactory(dp -> new DateCell() {
+				@Override
+				public void updateItem(LocalDate item, boolean empty) {
+					super.updateItem(item, empty);
+					setDisable(empty || item.isBefore(LocalDate.now()));
+				}
+			});
+
+			checkOutDatePicker.setDayCellFactory(dp -> new DateCell() {
+				@Override
+				public void updateItem(LocalDate item, boolean empty) {
+					super.updateItem(item, empty);
+					LocalDate checkIn = checkInDatePicker.getValue();
+					if (checkIn != null) {
+						setDisable(empty || !item.isAfter(checkIn));
+					} else {
+						setDisable(empty || item.isBefore(LocalDate.now().plusDays(1)));
+					}
+				}
+			});
+
+			checkInDatePicker.valueProperty().addListener((obs, oldVal, newVal) -> {
+				if (newVal != null && checkOutDatePicker.getValue() != null
+						&& !checkOutDatePicker.getValue().isAfter(newVal)) {
+					checkOutDatePicker.setValue(null);
+				}
+				refreshBookingQuote();
+			});
+			checkOutDatePicker.valueProperty().addListener((obs, oldVal, newVal) -> refreshBookingQuote());
 
 			if (isAdmin) {
 				titleLabel.setText("Booked Rooms");
@@ -70,6 +122,7 @@ public class ViewRoomsController {
 				usernameCol.setVisible(false);
 				table.setVisible(false);
 				table.setManaged(false);
+				refreshBookingQuote();
 			}
 
 			refreshSummary();
@@ -92,28 +145,89 @@ public class ViewRoomsController {
 		}
 
 		String selectedType = typeCombo.getValue();
+		LocalDate checkInDate = checkInDatePicker.getValue();
+		LocalDate checkOutDate = checkOutDatePicker.getValue();
 
 		if (selectedType == null || selectedType.isBlank()) {
 			showAlert("Please select a room type");
 			return;
 		}
 
+		if (checkInDate == null) {
+			showAlert("Please select a check-in date");
+			return;
+		}
+
+		if (checkOutDate == null || !checkOutDate.isAfter(checkInDate)) {
+			showAlert("Check-out date must be after check-in date");
+			return;
+		}
+
+		long nights = ChronoUnit.DAYS.between(checkInDate, checkOutDate);
+		double pricePerNight;
+
 		try {
 			BookingDAO dao = new BookingDAO();
+			pricePerNight = this.dao.getPriceForType(selectedType);
 
 			int userId = LoginController.currentUser.getId();
-			Room bookedRoom = dao.bookRandomRoomByType(userId, selectedType, LocalDate.now().toString());
+			Room bookedRoom = dao.bookRandomRoomByType(
+					userId,
+					selectedType,
+					checkInDate.toString(),
+					checkOutDate.toString());
 
 			if (bookedRoom == null) {
 				showAlert("No available rooms for that type");
 				return;
 			}
 
-			showAlert("Room booked successfully: " + bookedRoom.getRoomNumber());
+			double totalPrice = pricePerNight * nights;
+
+			showAlert("Room booked successfully: " + bookedRoom.getRoomNumber()
+					+ "\nCheck-in: " + checkInDate
+					+ "\nCheck-out: " + checkOutDate
+					+ "\nNights: " + nights
+					+ "\nTotal: Rs " + String.format("%.0f", totalPrice));
 			refreshSummary();
+			refreshBookingQuote();
 
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+
+	private void refreshBookingQuote() {
+		String selectedType = typeCombo.getValue();
+		LocalDate checkInDate = checkInDatePicker.getValue();
+		LocalDate checkOutDate = checkOutDatePicker.getValue();
+
+		if (selectedType == null || selectedType.isBlank()) {
+			nightsLabel.setText("Nights: --");
+			pricePerNightLabel.setText("Price/night: --");
+			totalPriceLabel.setText("Total: --");
+			return;
+		}
+
+		try {
+			double pricePerNight = dao.getPriceForType(selectedType);
+			pricePerNightLabel.setText("Price/night: Rs " + String.format("%.0f", pricePerNight));
+
+			if (checkInDate == null || checkOutDate == null || !checkOutDate.isAfter(checkInDate)) {
+				nightsLabel.setText("Nights: --");
+				totalPriceLabel.setText("Total: --");
+				return;
+			}
+
+			long nights = ChronoUnit.DAYS.between(checkInDate, checkOutDate);
+			double total = nights * pricePerNight;
+
+			nightsLabel.setText("Nights: " + nights);
+			totalPriceLabel.setText("Total: Rs " + String.format("%.0f", total));
+		} catch (Exception e) {
+			nightsLabel.setText("Nights: --");
+			pricePerNightLabel.setText("Price/night: --");
+			totalPriceLabel.setText("Total: --");
 		}
 	}
 
