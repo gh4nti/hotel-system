@@ -18,6 +18,10 @@ import java.util.List;
 import java.util.Map;
 
 public class ViewRoomsController {
+	@FXML
+	private Label titleLabel;
+	@FXML
+	private Label subtitleLabel;
 
 	@FXML
 	private TableView<Room> table;
@@ -42,6 +46,9 @@ public class ViewRoomsController {
 	@FXML
 	public void initialize() {
 		try {
+			boolean isAdmin = LoginController.currentUser != null
+					&& LoginController.currentUser.getRole().equalsIgnoreCase("admin");
+
 			roomNumberCol.setCellValueFactory(new PropertyValueFactory<>("roomNumber"));
 			floorCol.setCellValueFactory(new PropertyValueFactory<>("floor"));
 			typeCol.setCellValueFactory(new PropertyValueFactory<>("type"));
@@ -67,6 +74,14 @@ public class ViewRoomsController {
 
 			ObservableList<Room> list = FXCollections.observableArrayList(dao.getAllRooms());
 			table.setItems(list);
+
+			if (!isAdmin) {
+				titleLabel.setText("Book a Room");
+				subtitleLabel.setText("Select a room type and the system will assign an available room automatically.");
+				table.setVisible(false);
+				table.setManaged(false);
+			}
+
 			refreshSummary();
 
 		} catch (Exception e) {
@@ -76,6 +91,11 @@ public class ViewRoomsController {
 
 	@FXML
 	public void handleBook() {
+		if (LoginController.currentUser == null) {
+			showAlert("Please login to book a room");
+			return;
+		}
+
 		String selectedType = typeCombo.getValue();
 
 		if (selectedType == null || selectedType.isBlank()) {

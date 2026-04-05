@@ -4,14 +4,15 @@
 <?import javafx.scene.layout.*?>
 
 <StackPane xmlns:fx="http://javafx.com/fxml"
+       fx:controller="com.hotel.controllers.GuestController"
        styleClass="page-root">
 
   <VBox spacing="12" alignment="CENTER" maxWidth="380" styleClass="card">
     <Label text="Guest Dashboard" styleClass="section-title" />
-    <Label text="Browse and reserve available rooms." styleClass="subtitle" />
+    <Label fx:id="welcomeLabel" styleClass="subtitle" />
 
-    <Button text="View Rooms" styleClass="primary-button" />
-    <Button text="Book Room" styleClass="secondary-button" />
+    <Button text="Book Room" onAction="#handleBookRoom" styleClass="primary-button" />
+    <Button text="Log Out" onAction="#handleLogout" styleClass="secondary-button" />
   </VBox>
 
 </StackPane>

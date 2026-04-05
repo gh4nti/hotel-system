@@ -8,8 +8,8 @@
            styleClass="page-root">
 
     <VBox spacing="15" alignment="CENTER" maxWidth="650" styleClass="card">
-        <Label text="All Rooms" styleClass="section-title" />
-        <Label text="Select a room type and the system will assign an available room automatically." styleClass="subtitle" />
+        <Label fx:id="titleLabel" text="All Rooms" styleClass="section-title" />
+        <Label fx:id="subtitleLabel" text="Select a room type and the system will assign an available room automatically." styleClass="subtitle" />
         <Label fx:id="summaryLabel" styleClass="info-label" wrapText="true" />
 
         <HBox spacing="10" alignment="CENTER">
