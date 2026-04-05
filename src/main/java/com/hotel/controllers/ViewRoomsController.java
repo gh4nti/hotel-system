@@ -2,40 +2,54 @@ package com.hotel.controllers;
 
 import com.hotel.dao.BookingDAO;
 import com.hotel.dao.RoomDAO;
-import com.hotel.models.Booking;
 import com.hotel.models.Room;
 import com.hotel.ui.ThemeManager;
 import javafx.collections.*;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.paint.Color;
+import javafx.scene.control.*;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
 
 public class ViewRoomsController {
 
 	@FXML
 	private TableView<Room> table;
 	@FXML
-	private TableColumn<Room, Integer> idCol;
+	private TableColumn<Room, String> roomNumberCol;
+	@FXML
+	private TableColumn<Room, Integer> floorCol;
 	@FXML
 	private TableColumn<Room, String> typeCol;
 	@FXML
 	private TableColumn<Room, Double> priceCol;
 	@FXML
 	private TableColumn<Room, Boolean> availCol;
+	@FXML
+	private ComboBox<String> typeCombo;
+	@FXML
+	private Label summaryLabel;
 
 	private RoomDAO dao = new RoomDAO();
+	private List<String> roomTypes;
 
 	@FXML
 	public void initialize() {
 		try {
-			idCol.setCellValueFactory(new PropertyValueFactory<>("id"));
+			roomNumberCol.setCellValueFactory(new PropertyValueFactory<>("roomNumber"));
+			floorCol.setCellValueFactory(new PropertyValueFactory<>("floor"));
 			typeCol.setCellValueFactory(new PropertyValueFactory<>("type"));
 			priceCol.setCellValueFactory(new PropertyValueFactory<>("price"));
 			availCol.setCellValueFactory(new PropertyValueFactory<>("available"));
+			roomTypes = dao.getRoomTypes();
+			typeCombo.getItems().setAll(roomTypes);
+			typeCombo.setPromptText("Select room type");
 			availCol.setCellFactory(col -> new TableCell<>() {
 				@Override
 				protected void updateItem(Boolean item, boolean empty) {
@@ -53,6 +67,7 @@ public class ViewRoomsController {
 
 			ObservableList<Room> list = FXCollections.observableArrayList(dao.getAllRooms());
 			table.setItems(list);
+			refreshSummary();
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -61,15 +76,10 @@ public class ViewRoomsController {
 
 	@FXML
 	public void handleBook() {
-		Room selected = table.getSelectionModel().getSelectedItem();
+		String selectedType = typeCombo.getValue();
 
-		if (selected == null) {
-			showAlert("Please select a room");
-			return;
-		}
-
-		if (!selected.isAvailable()) {
-			showAlert("Room already booked");
+		if (selectedType == null || selectedType.isBlank()) {
+			showAlert("Please select a room type");
 			return;
 		}
 
@@ -77,16 +87,35 @@ public class ViewRoomsController {
 			BookingDAO dao = new BookingDAO();
 
 			int userId = LoginController.currentUser.getId();
-			dao.bookRoom(new Booking(0, userId, selected.getId(), "2026-04-05"));
+			Room bookedRoom = dao.bookRandomRoomByType(userId, selectedType, LocalDate.now().toString());
 
-			showAlert("Room booked successfully!");
+			if (bookedRoom == null) {
+				showAlert("No available rooms for that type");
+				return;
+			}
+
+			showAlert("Room booked successfully: " + bookedRoom.getRoomNumber());
 
 			// refresh table
 			table.setItems(FXCollections.observableArrayList(new RoomDAO().getAllRooms()));
+			refreshSummary();
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	private void refreshSummary() throws Exception {
+		Map<String, Integer> counts = dao.getAvailableCountsByType();
+		StringBuilder builder = new StringBuilder("Available rooms: ");
+		for (int i = 0; i < roomTypes.size(); i++) {
+			String type = roomTypes.get(i);
+			if (i > 0) {
+				builder.append(" | ");
+			}
+			builder.append(type).append(" ").append(counts.getOrDefault(type, 0));
+		}
+		summaryLabel.setText(builder.toString());
 	}
 
 	@FXML

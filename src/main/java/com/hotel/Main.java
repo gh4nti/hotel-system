@@ -10,6 +10,8 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+        InitDB.initializeDatabase();
+
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/LoginView.fxml"));
         Scene scene = ThemeManager.createThemedScene(loader.load(), null);
 

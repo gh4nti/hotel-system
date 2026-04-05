@@ -5,28 +5,16 @@ import com.hotel.models.Room;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class RoomDAO {
-
-	public void addRoom(Room room) throws SQLException {
-		Connection conn = DatabaseConnection.connect();
-
-		String sql = "INSERT INTO Room(type, price, available) VALUES(?,?,?)";
-		PreparedStatement stmt = conn.prepareStatement(sql);
-
-		stmt.setString(1, room.getType());
-		stmt.setDouble(2, room.getPrice());
-		stmt.setInt(3, room.isAvailable() ? 1 : 0);
-
-		stmt.executeUpdate();
-		conn.close();
-	}
 
 	public List<Room> getAllRooms() throws SQLException {
 		Connection conn = DatabaseConnection.connect();
 
-		String sql = "SELECT * FROM Room";
+		String sql = "SELECT * FROM Room ORDER BY floor, CAST(room_number AS INTEGER)";
 		Statement stmt = conn.createStatement();
 		ResultSet rs = stmt.executeQuery(sql);
 
@@ -35,6 +23,8 @@ public class RoomDAO {
 		while (rs.next()) {
 			Room room = new Room(
 					rs.getInt("id"),
+					rs.getString("room_number"),
+					rs.getInt("floor"),
 					rs.getString("type"),
 					rs.getDouble("price"),
 					rs.getInt("available") == 1);
@@ -43,5 +33,96 @@ public class RoomDAO {
 
 		conn.close();
 		return rooms;
+	}
+
+	public Map<String, Integer> getAvailableCountsByType() throws SQLException {
+		Connection conn = DatabaseConnection.connect();
+
+		String sql = "SELECT type, SUM(CASE WHEN available = 1 THEN 1 ELSE 0 END) AS available_count, MIN(id) AS sort_id FROM Room GROUP BY type ORDER BY sort_id";
+		Statement stmt = conn.createStatement();
+		ResultSet rs = stmt.executeQuery(sql);
+
+		Map<String, Integer> counts = new LinkedHashMap<>();
+		while (rs.next()) {
+			counts.put(rs.getString("type"), rs.getInt("available_count"));
+		}
+
+		conn.close();
+		return counts;
+	}
+
+	public List<String> getRoomTypes() throws SQLException {
+		Connection conn = DatabaseConnection.connect();
+
+		String sql = "SELECT type, MIN(id) AS sort_id FROM Room GROUP BY type ORDER BY sort_id";
+		Statement stmt = conn.createStatement();
+		ResultSet rs = stmt.executeQuery(sql);
+
+		List<String> types = new ArrayList<>();
+		while (rs.next()) {
+			types.add(rs.getString("type"));
+		}
+
+		conn.close();
+		return types;
+	}
+
+	public double getPriceForType(String type) throws SQLException {
+		Connection conn = DatabaseConnection.connect();
+
+		String sql = "SELECT price FROM Room WHERE type = ? LIMIT 1";
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		stmt.setString(1, type);
+		ResultSet rs = stmt.executeQuery();
+
+		double price = rs.next() ? rs.getDouble("price") : 0.0;
+		conn.close();
+		return price;
+	}
+
+	public void updateRoomTypeAndPrice(String currentType, String newType, double newPrice) throws SQLException {
+		Connection conn = DatabaseConnection.connect();
+
+		String sql = "UPDATE Room SET type = ?, price = ? WHERE type = ?";
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		stmt.setString(1, newType);
+		stmt.setDouble(2, newPrice);
+		stmt.setString(3, currentType);
+		stmt.executeUpdate();
+
+		conn.close();
+	}
+
+	public Room getRandomAvailableRoomByType(String type) throws SQLException {
+		Connection conn = DatabaseConnection.connect();
+
+		String sql = "SELECT * FROM Room WHERE type = ? AND available = 1 ORDER BY RANDOM() LIMIT 1";
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		stmt.setString(1, type);
+		ResultSet rs = stmt.executeQuery();
+
+		Room room = null;
+		if (rs.next()) {
+			room = new Room(
+					rs.getInt("id"),
+					rs.getString("room_number"),
+					rs.getInt("floor"),
+					rs.getString("type"),
+					rs.getDouble("price"),
+					rs.getInt("available") == 1);
+		}
+
+		conn.close();
+		return room;
+	}
+
+	public void markRoomUnavailable(int roomId) throws SQLException {
+		Connection conn = DatabaseConnection.connect();
+
+		String sql = "UPDATE Room SET available = 0 WHERE id = ?";
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		stmt.setInt(1, roomId);
+		stmt.executeUpdate();
+		conn.close();
 	}
 }

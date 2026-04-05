@@ -17,9 +17,9 @@ The application supports role-based login, room management for admins, and room 
 - Role-based navigation:
     - Admin -> Admin Dashboard
     - Guest -> Guest Dashboard
-- View all rooms in a table (id, type, price, availability)
-- Book a room (marks room as unavailable)
-- Admin: add new rooms through a dialog
+- View all pre-seeded rooms in a table (room number, floor, type, price, availability)
+- Book a room by type, with the system randomly assigning an available room of that type
+- Room inventory is automatically seeded at startup: 10 floors plus ground, 15 rooms per level
 - Light/Dark theme auto-selection based on OS settings
 
 ## Project Structure
@@ -106,6 +106,7 @@ Entry point:
 
 - `LoginView.fxml` is loaded on startup.
 - On successful login, users are routed by role.
+- Room inventory is recreated/seeded from `InitDB` when needed, so the hotel always starts with the expected room layout.
 - Room and booking operations are handled through DAO classes:
     - `UserDAO`
     - `RoomDAO`

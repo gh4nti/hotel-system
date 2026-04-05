@@ -11,7 +11,8 @@
     <Label text="Admin Dashboard" styleClass="section-title"/>
     <Label fx:id="welcomeLabel" styleClass="subtitle" />
 
-    <Button text="Add Room" onAction="#handleAddRoom" styleClass="secondary-button" />
+    <Label text="Room inventory is pre-generated and automatically managed." styleClass="info-label" wrapText="true" />
+    <Button text="Modify Room" onAction="#handleModifyRoom" styleClass="secondary-button" />
     <Button text="View Rooms" onAction="#handleViewRooms" styleClass="primary-button"/>
     <Region VBox.vgrow="ALWAYS" />
     <Button text="Log Out" onAction="#handleLogout" styleClass="secondary-button" />
