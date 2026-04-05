@@ -9,13 +9,17 @@
 
     <VBox spacing="15" alignment="CENTER" maxWidth="360" styleClass="card">
 
-    <Label text="Hotel Login" styleClass="screen-title"/>
-        <Label text="Welcome back. Sign in to continue." wrapText="true" styleClass="subtitle"/>
+    <Label fx:id="titleLabel" text="Find Your Account" styleClass="screen-title"/>
+        <Label fx:id="subtitleLabel" text="Enter your username to continue." wrapText="true" styleClass="subtitle"/>
 
-        <TextField fx:id="usernameField" promptText="Username"/>
-        <PasswordField fx:id="passwordField" promptText="Password" onAction="#handleLogin"/>
+        <TextField fx:id="usernameField" promptText="Username" onAction="#handlePrimaryAction"/>
+        <PasswordField fx:id="passwordField" promptText="Password" visible="false" managed="false" onAction="#handlePrimaryAction"/>
+        <PasswordField fx:id="confirmPasswordField" promptText="Confirm Password" visible="false" managed="false" onAction="#handlePrimaryAction"/>
 
-    <Button text="Login" onAction="#handleLogin" styleClass="primary-button"/>
+    <HBox spacing="10" alignment="CENTER">
+        <Button fx:id="primaryButton" text="Continue" onAction="#handlePrimaryAction" styleClass="primary-button"/>
+        <Button fx:id="secondaryButton" text="Use Different Username" visible="false" managed="false" onAction="#handleSecondaryAction" styleClass="secondary-button"/>
+    </HBox>
 
     <Label fx:id="messageLabel" styleClass="info-label"/>
 

@@ -22,6 +22,8 @@ public class InitDB {
 			stmt.execute(
 					"CREATE TABLE IF NOT EXISTS User (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, password TEXT, role TEXT)");
 
+			ensureDefaultAdmin(conn);
+
 			boolean needsRoomMigration = !roomTableHasNewSchema(conn);
 			if (needsRoomMigration) {
 				stmt.execute("DROP TABLE IF EXISTS Booking");
@@ -34,6 +36,25 @@ public class InitDB {
 					"CREATE TABLE IF NOT EXISTS Booking (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER, room_id INTEGER, date TEXT)");
 
 			seedRoomsIfNeeded(conn);
+		}
+	}
+
+	private static void ensureDefaultAdmin(Connection conn) throws Exception {
+		String updateSql = "UPDATE User SET username=?, password=? WHERE role='admin'";
+		try (PreparedStatement stmt = conn.prepareStatement(updateSql)) {
+			stmt.setString(1, "admin");
+			stmt.setString(2, "123");
+			int updatedRows = stmt.executeUpdate();
+
+			if (updatedRows == 0) {
+				String insertSql = "INSERT INTO User(username, password, role) VALUES(?,?,?)";
+				try (PreparedStatement insertStmt = conn.prepareStatement(insertSql)) {
+					insertStmt.setString(1, "admin");
+					insertStmt.setString(2, "123");
+					insertStmt.setString(3, "admin");
+					insertStmt.executeUpdate();
+				}
+			}
 		}
 	}
 

@@ -45,4 +45,28 @@ public class UserDAO {
 		conn.close();
 		return null;
 	}
+
+	public User findByUsername(String username) throws SQLException {
+		Connection conn = DatabaseConnection.connect();
+
+		String sql = "SELECT * FROM User WHERE username=?";
+		PreparedStatement stmt = conn.prepareStatement(sql);
+
+		stmt.setString(1, username);
+
+		ResultSet rs = stmt.executeQuery();
+
+		if (rs.next()) {
+			User user = new User(
+					rs.getInt("id"),
+					rs.getString("username"),
+					rs.getString("password"),
+					rs.getString("role"));
+			conn.close();
+			return user;
+		}
+
+		conn.close();
+		return null;
+	}
 }
