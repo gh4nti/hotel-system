@@ -3,6 +3,7 @@ package com.hotel.dao;
 import com.hotel.database.DatabaseConnection;
 import com.hotel.models.Booking;
 import com.hotel.models.Room;
+import com.hotel.models.UserBookingInfo;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -96,5 +97,83 @@ public class BookingDAO {
 
 		conn.close();
 		return list;
+	}
+
+	public List<UserBookingInfo> getBookingsForUser(int userId) throws SQLException {
+		Connection conn = DatabaseConnection.connect();
+
+		String sql = """
+				SELECT b.id AS booking_id,
+				       r.id AS room_id,
+				       r.room_number,
+				       r.type,
+				       r.price
+				FROM Booking b
+				JOIN Room r ON r.id = b.room_id
+				WHERE b.user_id = ?
+				ORDER BY b.id
+				""";
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		stmt.setInt(1, userId);
+		ResultSet rs = stmt.executeQuery();
+
+		List<UserBookingInfo> bookings = new ArrayList<>();
+		while (rs.next()) {
+			bookings.add(new UserBookingInfo(
+					rs.getInt("booking_id"),
+					rs.getInt("room_id"),
+					rs.getString("room_number"),
+					rs.getString("type"),
+					rs.getDouble("price")));
+		}
+
+		conn.close();
+		return bookings;
+	}
+
+	public void upgradeBookingRoom(int userId, int bookingId, int oldRoomId, int newRoomId) throws SQLException {
+		Connection conn = DatabaseConnection.connect();
+		conn.setAutoCommit(false);
+
+		try {
+			String validateSql = "SELECT room_id FROM Booking WHERE id = ? AND user_id = ?";
+			PreparedStatement validateStmt = conn.prepareStatement(validateSql);
+			validateStmt.setInt(1, bookingId);
+			validateStmt.setInt(2, userId);
+			ResultSet rs = validateStmt.executeQuery();
+
+			if (!rs.next() || rs.getInt("room_id") != oldRoomId) {
+				conn.rollback();
+				throw new SQLException("Invalid booking selected for upgrade.");
+			}
+
+			String occupyNewSql = "UPDATE Room SET available = 0 WHERE id = ? AND available = 1";
+			PreparedStatement occupyStmt = conn.prepareStatement(occupyNewSql);
+			occupyStmt.setInt(1, newRoomId);
+			int occupiedRows = occupyStmt.executeUpdate();
+
+			if (occupiedRows == 0) {
+				conn.rollback();
+				throw new SQLException("Selected upgrade room is no longer available.");
+			}
+
+			String updateBookingSql = "UPDATE Booking SET room_id = ? WHERE id = ?";
+			PreparedStatement bookingStmt = conn.prepareStatement(updateBookingSql);
+			bookingStmt.setInt(1, newRoomId);
+			bookingStmt.setInt(2, bookingId);
+			bookingStmt.executeUpdate();
+
+			String freeOldSql = "UPDATE Room SET available = 1 WHERE id = ?";
+			PreparedStatement freeStmt = conn.prepareStatement(freeOldSql);
+			freeStmt.setInt(1, oldRoomId);
+			freeStmt.executeUpdate();
+
+			conn.commit();
+		} catch (SQLException e) {
+			conn.rollback();
+			throw e;
+		} finally {
+			conn.close();
+		}
 	}
 }

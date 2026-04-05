@@ -3,6 +3,7 @@ package com.hotel.dao;
 import com.hotel.database.DatabaseConnection;
 import com.hotel.models.BookedRoomInfo;
 import com.hotel.models.Room;
+import com.hotel.models.UpgradeOption;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -154,5 +155,24 @@ public class RoomDAO {
 
 		conn.close();
 		return bookedRooms;
+	}
+
+	public List<UpgradeOption> getHigherTierOptions(double currentPrice) throws SQLException {
+		Connection conn = DatabaseConnection.connect();
+
+		String sql = "SELECT type, MIN(price) AS tier_price FROM Room GROUP BY type HAVING MIN(price) > ? ORDER BY tier_price";
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		stmt.setDouble(1, currentPrice);
+		ResultSet rs = stmt.executeQuery();
+
+		List<UpgradeOption> options = new ArrayList<>();
+		while (rs.next()) {
+			options.add(new UpgradeOption(
+					rs.getString("type"),
+					rs.getDouble("tier_price")));
+		}
+
+		conn.close();
+		return options;
 	}
 }

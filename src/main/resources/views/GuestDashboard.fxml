@@ -10,8 +10,10 @@
   <VBox spacing="12" alignment="CENTER" maxWidth="380" styleClass="card">
     <Label text="Guest Dashboard" styleClass="section-title" />
     <Label fx:id="welcomeLabel" styleClass="subtitle" />
+    <Label fx:id="bookingStatusLabel" styleClass="info-label" wrapText="true" />
 
-    <Button text="Book Room" onAction="#handleBookRoom" styleClass="primary-button" />
+    <Button fx:id="bookRoomButton" text="Book Room" onAction="#handleBookRoom" styleClass="primary-button" />
+    <Button fx:id="upgradeRoomButton" text="Upgrade Room" onAction="#handleUpgradeRoom" styleClass="secondary-button" />
     <Button text="Log Out" onAction="#handleLogout" styleClass="secondary-button" />
   </VBox>
 
