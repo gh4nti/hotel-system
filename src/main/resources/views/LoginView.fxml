@@ -7,7 +7,7 @@
        fx:controller="com.hotel.controllers.LoginController"
        styleClass="page-root">
 
-    <VBox spacing="15" alignment="CENTER" maxWidth="360" styleClass="card">
+    <VBox spacing="15" alignment="CENTER" maxWidth="440" styleClass="card">
 
     <Label fx:id="titleLabel" text="Find Your Account" styleClass="screen-title"/>
         <Label fx:id="subtitleLabel" text="Enter your username to continue." wrapText="true" styleClass="subtitle"/>
@@ -17,8 +17,8 @@
         <PasswordField fx:id="confirmPasswordField" promptText="Confirm Password" visible="false" managed="false" onAction="#handlePrimaryAction"/>
 
     <HBox spacing="10" alignment="CENTER">
-        <Button fx:id="primaryButton" text="Continue" onAction="#handlePrimaryAction" styleClass="primary-button"/>
-        <Button fx:id="secondaryButton" text="Use Different Username" visible="false" managed="false" onAction="#handleSecondaryAction" styleClass="secondary-button"/>
+        <Button fx:id="primaryButton" text="Continue" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" onAction="#handlePrimaryAction" styleClass="primary-button"/>
+        <Button fx:id="secondaryButton" text="Change Username" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" visible="false" managed="false" onAction="#handleSecondaryAction" styleClass="secondary-button"/>
     </HBox>
 
     <Label fx:id="messageLabel" styleClass="info-label"/>

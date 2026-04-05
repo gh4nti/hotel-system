@@ -203,7 +203,7 @@ public class LoginController {
 		confirmPasswordField.setManaged(false);
 
 		primaryButton.setText("Login");
-		secondaryButton.setText("Use Different Username");
+		secondaryButton.setText("Change Username");
 		secondaryButton.setVisible(true);
 		secondaryButton.setManaged(true);
 
@@ -232,7 +232,7 @@ public class LoginController {
 		confirmPasswordField.setManaged(true);
 
 		primaryButton.setText("Register");
-		secondaryButton.setText("Use Different Username");
+		secondaryButton.setText("Change Username");
 		secondaryButton.setVisible(true);
 		secondaryButton.setManaged(true);
 
